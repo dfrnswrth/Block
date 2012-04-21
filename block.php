@@ -24,13 +24,9 @@
 			$colour = substr($colour,1);
 		}
 		if (strlen($colour)==6) {
-			list($r, $g, $b) = array($colour[0].$colour[1], 
-								   $colour[2].$colour[3],
-								   $colour[4].$colour[5]);
+			list($r, $g, $b) = array($colour[0].$colour[1], $colour[2].$colour[3], $colour[4].$colour[5]);
 		} elseif ( strlen( $colour ) == 3 ) {
-			list($r, $g, $b) = array($colour[0].$colour[0], 
-								   $colour[1].$colour[1],
-								   $colour[2].$colour[2]);
+			list($r, $g, $b) = array($colour[0].$colour[0], $colour[1].$colour[1], $colour[2].$colour[2]);
 		} else {
 			return false;
 		}
@@ -52,29 +48,36 @@
 	$width = $path[0];
 	$height = $path[1];
 	$bgColor = hex2rgb($path[2]);
-	$tColor = hex2rgb($path[3]);	
-
-	//	Set the text
-	$text = $width . " x " . $height;
-	$font = "VeraBd.ttf";
+	$tColor = hex2rgb($path[3]);
 	
-	//	Make sure the text is inside the image dimensions
-	$shortSide = min($width,$height);
-	$fontSize = round($shortSide / 9);
+	$cacheDir = "_cache/";
+	$filename = $path[0] . "x" . $path[1] . "_" . $path[2] . "_" . $path[3] . ".png";
+	
+	if (file_exists($cacheDir.$filename)) {
+		$file = $cacheDir.$filename;
+	} else {
 
-	//	Get size of rendered text
-	$textVolume = imagettfbbox($fontSize,0,$font,$text);
-	$posx = $textVolume[0] + ($width / 2) - ($textVolume[4] / 2);
-	$posy = $textVolume[1] + ($height / 2) - ($textVolume[5] / 2);
-
-	//	Let's make an image
-	$image = @imagecreatetruecolor($width, $height)
-		or die('Oops!');
-	$image_color = imagecolorallocate($image, $bgColor["red"], $bgColor["green"], $bgColor["blue"]);
-	imagefill($image, 0, 0, $image_color); 
-	$text_color = imagecolorallocate($image, $tColor["red"], $tColor["green"], $tColor["blue"]);
-	imagettftext($image, $fontSize, 0, $posx, $posy, $text_color, $font, $text);
-
+		//	Set the text
+		$text = $width . " x " . $height;
+		$font = "_fonts/Vera.ttf";
+		
+		//	Make sure the text is inside the image dimensions
+		$shortSide = min($width,$height);
+		$fontSize = round($shortSide / 9);
+	
+		//	Get size of rendered text
+		$textVolume = imagettfbbox($fontSize,0,$font,$text);
+		$posx = $textVolume[0] + ($width / 2) - ($textVolume[4] / 2);
+		$posy = $textVolume[1] + ($height / 2) - ($textVolume[5] / 2);
+	
+		//	Let's make an image
+		$image = @imagecreatetruecolor($width, $height)
+			or die('Oops!');
+		$image_color = imagecolorallocate($image, $bgColor["red"], $bgColor["green"], $bgColor["blue"]);
+		imagefill($image, 0, 0, $image_color); 
+		$text_color = imagecolorallocate($image, $tColor["red"], $tColor["green"], $tColor["blue"]);
+		imagettftext($image, $fontSize, 0, $posx, $posy, $text_color, $font, $text);
+	}
 	//	Send it
 	header ('Content-Type: image/png');
 	imagepng($image);
