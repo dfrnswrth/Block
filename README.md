@@ -13,7 +13,8 @@ Width is mandatory - everything after is optional. If no height is given, you ge
 
 <hr>
 
-Blatantly copied the idea from Placehold.it - http://placehold.it/
+Blatantly copied the idea from Placehold.it - http://placehold.it/    
+
 Using Bitstream Vera Sans for the text - http://www-old.gnome.org/fonts/
 
 <hr>
