@@ -1,4 +1,7 @@
 <?
+	error_reporting(E_ALL);
+	ini_set("display_errors","on");
+
 	// Set memory_limit to appropriate size
 	ini_set("memory_limit","64M"); // Good for ~ 7.3MP (2700^2)
 
@@ -41,21 +44,27 @@
 		$path[1] = $path[0];
 	}
 	//	Set some defaults, overwrite with commands
-	$defaults = array("50", "50", "444444", "bbbbbb");
+	$defaultBg = "444444";
+	$defaultText = "bbbbbb";
+	$defaults = array("50", "50", $defaultBg, $defaultText);
 	$path = array_replace($defaults, $path);
-
-	//	Get our values from $path
-	$width = $path[0];
-	$height = $path[1];
-	$bgColor = hex2rgb($path[2]);
-	$tColor = hex2rgb($path[3]);
 	
 	$cacheDir = "_cache/";
-	$filename = $path[0] . "x" . $path[1] . "_" . $path[2] . "_" . $path[3] . ".png";
 	
-	if (file_exists($cacheDir.$filename)) {
-		$file = $cacheDir.$filename;
+	if ($path[2] != $defaultBg && $path[3] != $defaultBg) {
+		$filename = $path[0] . "x" . $path[1] . "_" . $path[2] . "_" . $path[3] . ".png";
 	} else {
+		$filename = $path[0] . "x" . $path[1] . ".png";
+	}
+	
+	$file = $cacheDir . $filename;
+	
+	if (!file_exists($file)) {
+		//	Get our values from $path
+		$width = $path[0];
+		$height = $path[1];
+		$bgColor = hex2rgb($path[2]);
+		$tColor = hex2rgb($path[3]);
 
 		//	Set the text
 		$text = $width . " x " . $height;
@@ -77,9 +86,16 @@
 		imagefill($image, 0, 0, $image_color); 
 		$text_color = imagecolorallocate($image, $tColor["red"], $tColor["green"], $tColor["blue"]);
 		imagettftext($image, $fontSize, 0, $posx, $posy, $text_color, $font, $text);
+		
+		//	Write it to file
+		imagepng($image, $file);
+		imagedestroy($image);
 	}
+	
+	//	get image from file
+	$data = file_get_contents($file);
+
 	//	Send it
 	header ('Content-Type: image/png');
-	imagepng($image);
-	imagedestroy($image);
+	die($data);
 ?>
