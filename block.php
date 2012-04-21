@@ -1,7 +1,4 @@
 <?
-	error_reporting(E_ALL);
-	ini_set("display_errors","on");
-
 	// Set memory_limit to appropriate size
 	ini_set("memory_limit","64M"); // Good for ~ 7.3MP (2700^2)
 
